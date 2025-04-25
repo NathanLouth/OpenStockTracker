@@ -1,0 +1,14 @@
+{
+  "name": "open-stock-tracker",
+  "version": "0.0.1",
+  "description": "Open Stock Tracker",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Nathan Louth",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^35.2.1"
+  }
+}

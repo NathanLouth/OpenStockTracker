@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Stock Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 id="ProgramTitle"></h1>
+
+    <div id="stock-list"></div>
+  </div>
+
+  <h1></h1>
+
+  <div class="container">
+    <h3>Recent Activity Log</h3>
+    <div class="log-container">
+      <div id="activity-log"></div>
+    </div>
+  </div>
+
+  <div id="action-modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">Action</h2>
+      <div id="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button class="modal-button" id="modal-confirm-button">Okay</button>
+        <button class="cancel-button" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="alert-modal" class="modal">
+    <div class="modal-content alert-modal-content">
+      <p id="alert-message" class="alert-message"></p>
+      <button class="modal-button" onclick="closeModal(true)">Okay</button>
+    </div>
+  </div>
+
+  <button class="add-item-button" onclick="openAddItemModal()">Add Item</button>
+  <button class="remove-item-button" onclick="openRemoveItemModal()">Remove Item</button>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>

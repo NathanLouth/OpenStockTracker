@@ -1,0 +1,2 @@
+Clear-Host
+npm start
