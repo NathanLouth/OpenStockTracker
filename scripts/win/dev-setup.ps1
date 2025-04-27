@@ -1,6 +1,10 @@
 $ErrorActionPreference = "Stop"
 
 try{
+    if ($args[0] -eq "--install-node") {
+        winget install -e --id OpenJS.NodeJS.LTS
+    }
+
     npm install --save-dev electron
     npm install --save-dev electron-builder
 
