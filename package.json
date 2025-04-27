@@ -58,6 +58,7 @@
     },
     "linux": {
       "target": "deb",
+      "icon": "icons/main.png",
       "maintainer": "Nathan Louth"
     }
   }
