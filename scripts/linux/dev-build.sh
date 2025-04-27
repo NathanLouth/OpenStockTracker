@@ -2,7 +2,7 @@
 
 if [ "$1" == "--build-deps" ]; then
     sudo apt update -y
-    sudo apt isntall -y binutils
+    sudo apt install -y binutils
 fi
 
 clear
