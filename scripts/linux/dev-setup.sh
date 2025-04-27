@@ -9,9 +9,11 @@ if [ "$1" == "--install-node" ]; then
     sudo apt install curl -y
 
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-    \. "$HOME/.nvm/nvm.sh"
+    source "$HOME/.nvm/nvm.sh"
     nvm install --lts
 fi
+
+[ -f "$HOME/.nvm/nvm.sh" ] && source "$HOME/.nvm/nvm.sh"
 
 npm install --save-dev electron
 npm install --save-dev electron-builder
