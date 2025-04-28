@@ -25,7 +25,9 @@ async function displayStock() {
     const item = stockData[itemKey];
     const itemDiv = document.createElement('div');
 
-    if (item.quantity <= item.verylow) {
+    if (item.hideorder === true){
+      itemDiv.className = 'item-container green-bg';
+    } else if (item.quantity <= item.verylow) {
       itemDiv.className = 'item-container red-bg';
     } else if (item.quantity <= item.low) {
       itemDiv.className = 'item-container orange-bg';
@@ -33,30 +35,32 @@ async function displayStock() {
       itemDiv.className = 'item-container green-bg';
     }
 
-    const OrderStatus = item.orders.length > 0 ?
+    const OrderStatus = item.orders.length > 0 && !item.hideorder ?
       `<span class="Order">- ${item.orders.map(order => `Order ${order.orderNumber} (${order.quantity} items)`).join(', ')}</span>` :
       '';
 
-    itemDiv.innerHTML = `
+      itemDiv.innerHTML = `
       <div>
         <h3>
-        ${item.name} 
-        ${item.model ? '- <span style="font-size: 0.8em;">' + item.model + '</span>' : ''}
+          ${item.name} 
+          ${item.model ? '- <span style="font-size: 0.8em;">' + item.model + '</span>' : ''}
         </h3>
         <p>Quantity: <span class="quantity">${item.quantity}</span> ${OrderStatus}</p>
       </div>
       <div class="buttons-container">
         <div class="buttons">
           <button onclick="openModal('takeOutOfStock', '${itemKey}')">Take Out of Stock</button>
-          <button onclick="openModal('orderItem', '${itemKey}')">Order</button>
-          <button onclick="openModal('addToStock', '${itemKey}')">Order Arrived</button>
+          ${!item.hideorder ? `
+            <button onclick="openModal('orderItem', '${itemKey}')">Order</button>
+            <button onclick="openModal('addToStock', '${itemKey}')">Order Arrived</button>
+          ` : `<span style="padding-top: 7px;">Don't Order More Stock</span>`}
         </div>
         <div class="edit-buttons">
           <button class="edit-button" onclick="openEditModal('${itemKey}')">Edit Quantity</button>
           <button class="edit-button" onclick="openThresholdModal('${itemKey}')">Edit Properties</button>
         </div>
       </div>
-    `;
+    `;    
 
     stockListDiv.appendChild(itemDiv);
   }
@@ -334,6 +338,10 @@ async function openThresholdModal(itemKey) {
 
     <p style="display: inline;">Very Low Stock:</p>
     <input type="number" id="verylow-threshold" class="modal-input" placeholder="Very low threshold" value="${item.verylow}" style="display: inline;">
+
+    <p></p>
+    <p style="display: inline;">Don't Order More Stock:</p>
+    <input type="checkbox"  id="hideorder-threshold" name="Hide Order Options" value="true" ${item.hideorder ? 'checked' : ''}>
   `;
   confirmButton.onclick = async function() {
     manualEditThreshold(itemKey);
@@ -349,6 +357,7 @@ async function manualEditThreshold(itemKey) {
   const ItemName = document.getElementById('item-threshold').value;
   const ItemModel = document.getElementById('model-threshold').value;
   const ItemSpecs = document.getElementById('Specs-threshold').value;
+  const hideOrder = document.getElementById('hideorder-threshold').checked;
 
   if (isNaN(lowThreshold) || isNaN(veryLowThreshold) || isNaN(maxThreshold) || !ItemName || !ItemModel) {
     showAlert("Please fill in all fields.");
@@ -363,12 +372,14 @@ async function manualEditThreshold(itemKey) {
     const oldItemName = item.name;
     const oldItemModel = item.model;
     const oldItemSpecs = item.specs;
+    const oldHideOrder = item.hideorder
 
     item.low = lowThreshold;
     item.verylow = veryLowThreshold;
     item.max = maxThreshold;
     item.name = ItemName;
     item.model = ItemModel;
+    item.hideorder = hideOrder
     if (!(ItemSpecs == "undefined" || ItemSpecs == "")){
       item.specs = ItemSpecs;
     }
@@ -446,6 +457,9 @@ async function openAddItemModal() {
           <input type="number" id="item-low" class="modal-input" placeholder="Low Stock Threshold" min="1" required>
           <input type="number" id="item-verylow" class="modal-input" placeholder="Very Low Stock Threshold" min="1" required>
           <input type="number" id="item-quantity" class="modal-input" placeholder="Initial Quantity" min="0" required>
+          <p></p>
+          <p style="display: inline; color: gray">Don't Order More Stock:</p>
+          <input type="checkbox"  id="hideorder-threshold" name="Hide Order Options" value="true">
       </div>
   `;
   
@@ -464,6 +478,7 @@ async function addItemToStock() {
   const lowStock = parseInt(document.getElementById('item-low').value, 10);
   const veryLowStock = parseInt(document.getElementById('item-verylow').value, 10);
   const initialQuantity = parseInt(document.getElementById('item-quantity').value, 10);
+  const hideOrder = document.getElementById('hideorder-threshold').checked;
   
   if (!itemName || isNaN(maxStock) || isNaN(lowStock) || isNaN(veryLowStock) || isNaN(initialQuantity)) {
       showAlert("Please fill in all required fields.");
@@ -485,6 +500,7 @@ async function addItemToStock() {
       low: lowStock,
       verylow: veryLowStock,
       max: maxStock,
+      hideorder: hideOrder,
       orders: []
   };
   
